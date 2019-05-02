@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (C) 2018 Kyle Schwarz
+# Copyright (C) 2019 Kyle Schwarz
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,12 +18,12 @@
 
 v_script="4.0.1"
 v_mingww64="6git"
-v_binutils="2.31git"
+v_binutils="2.32git"
 v_gcc="8svn"
 v_gmp="6.1.2"
-v_mpfr="4.0.1"
+v_mpfr="4.0.2"
 v_mpc="1.1.0"
-v_isl="0.20"
+v_isl="0.21"
 
 show_help()
 {
@@ -48,7 +48,7 @@ show_version()
 {
   cat <<VERSION
 mingw-w64-build $v_script
-Copyright (C) 2018 Kyle Schwarz
+Copyright (C) 2019 Kyle Schwarz
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
@@ -86,7 +86,7 @@ download_sources()
   git clone --depth 1 -b v6.x git://git.code.sf.net/p/mingw-w64/mingw-w64 mingw-w64-$v_mingww64 || error_exit
 
   echo "downloading binutils" >&3
-  git clone --depth 1 -b binutils-2_31-branch --single-branch git://sourceware.org/git/binutils-gdb.git binutils-$v_binutils || error_exit
+  git clone --depth 1 -b binutils-2_32-branch --single-branch git://sourceware.org/git/binutils-gdb.git binutils-$v_binutils || error_exit
 
   echo "downloading gcc" >&3
   svn co svn://gcc.gnu.org/svn/gcc/branches/gcc-8-branch gcc-$v_gcc || error_exit
@@ -112,20 +112,6 @@ download_sources()
   ln -s "../mpfr-$v_mpfr" "mpfr"
   ln -s "../mpc-$v_mpc" "mpc"
   ln -s "../isl-$v_isl" "isl"
-
-  patch -p 1 <<PATCH
-diff -uprN a/libstdc++-v3/config/os/mingw32-w64/os_defines.h b/libstdc++-v3/config/os/mingw32-w64/os_defines.h
---- a/libstdc++-v3/config/os/mingw32-w64/os_defines.h   2017-01-01 04:07:43.000000000 -0800
-+++ b/libstdc++-v3/config/os/mingw32-w64/os_defines.h   2017-05-25 18:47:52.161016148 -0700
-@@ -76,6 +76,7 @@
-
- #ifdef __x86_64__
- #define _GLIBCXX_LLP64 1
-+#define _GLIBCXX_USE_WEAK_REF 0
- #endif
-
- // Enable use of GetModuleHandleEx (requires Windows XP/2003) in
-PATCH
 }
 
 build_toolchain()
